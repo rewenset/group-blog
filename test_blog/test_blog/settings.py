@@ -129,3 +129,9 @@ LOGOUT_URL = reverse_lazy('logout')
 AUTHENTICATION_BACKENDS = (
     'account.authentication.EmailAuthBackend',  # custom
 )
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'mymailsmtp0@gmail.com'
+EMAIL_HOST_PASSWORD = '********'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

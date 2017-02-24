@@ -16,5 +16,15 @@ urlpatterns = [
         auth_views.logout_then_login,
         name='logout_then_login'),
 
-    url(r'^register/$', views.register, name='register'),
+    url(r'^register/$',
+        views.register,
+        name='register'),
+
+    url(r'^register/$',
+        views.register,
+        name='register'),
+
+    url(r'^activate/(?P<key>.+)$',
+        views.confirm_signup,
+        name='activation'),
 ]

@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.http import require_POST
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from .models import Post
@@ -51,8 +52,9 @@ def post_detail(request, year, month, day, post):
             new_comment.post = post
             new_comment.user = request.user
             new_comment.save()
-    else:
-        comment_form = CommentForm()
+            messages.success(request, 'Your comment has been added.')
+
+    comment_form = CommentForm()
 
     return render(request,
                   'blog/post/detail.html',

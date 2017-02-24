@@ -125,3 +125,7 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = reverse_lazy('blog:post_list')  # which URL to redirect after login
 LOGIN_URL = reverse_lazy('login')
 LOGOUT_URL = reverse_lazy('logout')
+
+AUTHENTICATION_BACKENDS = (
+    'account.authentication.EmailAuthBackend',  # custom
+)

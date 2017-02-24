@@ -4,11 +4,14 @@
 
 {% block content %}
     <a href="{% url "blog:post_list" %}">< back</a>
-    <h2>{{ post.title }}</h2>
-    <p class="date">
-        Published {{ post.publish }} by {{ post.author }}
-    </p>
-    {{ post.body|linebreaks }}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2>{{ post.title }}</h2>
+            {{ post.body|linebreaks }}
+        </div>
+        <div class="panel-footer"><em>Published {{ post.publish }} by {{ post.author }}</em></div>
+    </div>
+
     {% with total_likes=post.users_like.count users_like=post.users_like.all %}
         <div class="image_info">
 
@@ -18,14 +21,20 @@
                     like{{ total_likes|pluralize }}
                 </span>
 
-                <a href="#" data-id="{{ post.id }}"
-                   data-action="{% if request.user in users_like %}un{% endif %}like" class="like button">
-                    {% if request.user not in users_like %}
-                        Like
-                    {% else %}
-                        Unlike
-                    {% endif %}
-                </a>
+                <button type="button" class="btn btn-default" aria-label="Left Align">
+                    <span class="glyphicon glyphicon-heart" aria-hidden="true">
+                        <a href="#" data-id="{{ post.id }}"
+                           data-action="{% if request.user in users_like %}un{% endif %}like" class="like button">
+                            {% if request.user not in users_like %}
+                                Like
+                            {% else %}
+                                Unlike
+                            {% endif %}
+                        </a>
+                    </span>
+                </button>
+
+
             </div>
 
             {{ image.description|linebreaks }}
@@ -33,19 +42,17 @@
 
     {% endwith %}
 
-    {% with comments.count as total_comments %}
-        <h2>
-            {{ total_comments }} comment{{ total_comments|pluralize }}
-        </h2>
-    {% endwith %}
-    {% if comments %}
-        {% include "pagination.html" with page=comments %}
-    {% endif %}
+    <h2>
+        comments section:
+    </h2>
+
+    {% include "pagination.html" with page=comments %}
+
     {% for comment in comments %}
-        <div class="comment">
+        <div class="well">
             <p class="info">
-                Comment by {{ comment.user.email }}
-                {{ comment.created }}
+                <em>Comment by {{ comment.user.email }}
+                    ({{ comment.created }})</em>
             </p>
             {{ comment.body|linebreaks }}
         </div>
@@ -55,9 +62,11 @@
 
     <h2>Add a new comment</h2>
     <form method="post">
-        {{ comment_form.as_p }}
+        {% for field in comment_form %}
+            {{ field }}
+        {% endfor %}
         {% csrf_token %}
-        <p><input type="submit" value="Add comment"></p>
+        <p><input type="submit" class="btn btn-default" value="Add comment"></p>
     </form>
 
     <a href="{% url "blog:post_list" %}">< back</a>
@@ -65,34 +74,34 @@
 
 {% block domready %}
     $('a.like').click(function(e){
-        e.preventDefault();
-        $.post(
-            '{% url "blog:post_like" %}',
-            {
-                id: $(this).data('id'),
-                action: $(this).data('action')
-            },
-            function(data) {
-                if (data['status'] == 'ok') {
-                    var previous_action = $('a.like').data('action');
-                    var previous_likes = parseInt($('span.count .total').text());
+    e.preventDefault();
+    $.post(
+    '{% url "blog:post_like" %}',
+    {
+    id: $(this).data('id'),
+    action: $(this).data('action')
+    },
+    function(data) {
+    if (data['status'] == 'ok') {
+    var previous_action = $('a.like').data('action');
+    var previous_likes = parseInt($('span.count .total').text());
 
-                    if (previous_action == 'like') {
+    if (previous_action == 'like') {
 
-                        $('a.like').data('action', 'unlike');
-                        $('a.like').text('Unlike');
-                        $('span.count .total').text(previous_likes + 1);
+    $('a.like').data('action', 'unlike');
+    $('a.like').text('Unlike');
+    $('span.count .total').text(previous_likes + 1);
 
-                    } else {
+    } else {
 
-                        $('a.like').data('action', 'like');
-                        $('a.like').text('Like');
-                        $('span.count .total').text(previous_likes - 1);
+    $('a.like').data('action', 'like');
+    $('a.like').text('Like');
+    $('span.count .total').text(previous_likes - 1);
 
-                    }
+    }
 
-                }
-            }
-        );
+    }
+    }
+    );
     });
 {% endblock %}

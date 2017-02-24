@@ -81,7 +81,7 @@ def confirm_signup(request, key):
     profile = get_object_or_404(Profile, activation_key=key)
     profile.activation_key = '0'
     profile.save()
-    messages.success('Email confirmed. Now you can sign-in.')
+    messages.success(request, 'Email confirmed. Now you can sign-in.')
     return redirect('login')
 
 

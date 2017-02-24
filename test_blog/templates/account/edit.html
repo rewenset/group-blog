@@ -8,7 +8,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ profile_form.as_p }}
-        <p><input type="submit" value="Save changes"></p>
+        <p><input type="submit" class="btn btn-default" value="Save changes"></p>
     </form>
     <a href="{% url "blog:post_list" %}">< back</a>
 {% endblock %}

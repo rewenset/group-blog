@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}test blog{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
 </head>
-<body>
-<div id="header">
-    <h1>test blog</h1>
+<body class="col-md-8 col-md-offset-2">
+<nav class="navbar navbar-inverse">
+    <a class="navbar-brand" href="#">test blog</a>
     {% if request.user.is_authenticated %}
-        <a href="{% url "edit" %}" class="navbar-link">edit account</a>
-        <a href="{% url "logout" %}" class="navbar-link">Sign-out</a>
+        <ul class="nav navbar-nav navbar-right" style="padding-right: 20px;">
+            <li class="navbar-link"><a href="{% url "edit" %}">edit account</a></li>
+            <li class="navbar-link"><a href="{% url "logout" %}">Sign-out </a></li>
+        </ul>
     {% endif %}
-</div>
+</nav>
 <div id="content">
     {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">
-                    {{ message|safe }}
-                    <a href="#" class="close">✖</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <a class="close" data-dismiss="alert">×</a>
+                {{ message|safe }}
+            </div>
+        {% endfor %}
     {% endif %}
     {% block content %}
     {% endblock %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="http://cdn.jsdelivr.net/jquery.cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
     <script>
         var csrftoken = $.cookie('csrftoken');
         function csrfSafeMethod(method) {

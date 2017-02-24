@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <a href="{% url "blog:post_list" %}">< back</a>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h4>Search by keyword:</h4></div>
+        <div class="panel-body">
+            <form method="get">
+                {% csrf_token %}
+                {{ search_form.as_p }}
+                <button type="submit">search</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    {% if keyword %}
+        <h2>Search with keyword = {{ keyword }}</h2>
+        {% if posts %}
+            {% for post in posts %}
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="text-center">
+                            <a href="{{ post.get_absolute_url }}">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        <p class="text-center"><em>Published {{ post.publish }} by {{ post.author }}</em></p>
+                        {{ post.body|truncatewords:30|linebreaks }}
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% else %}
+            <h2>No result.</h2>
+        {% endif %}
+    {% endif %}
+{% endblock %}

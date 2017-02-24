@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from .models import Post
-from .forms import CommentForm
+from .forms import CommentForm, SearchForm
 
 
 @login_required
@@ -20,6 +20,7 @@ def post_list(request):
         posts = paginator.page(1)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
+
     return render(request,
                   'blog/post/list.html',
                   {'page': page,
@@ -82,3 +83,20 @@ def post_like(request):
             pass
 
     return JsonResponse({'status': 'ko'})
+
+
+@login_required
+def post_search(request):
+    context = {'search_form': SearchForm()}
+    if 'query' in request.GET:
+        search_form = SearchForm(request.GET)
+        if search_form.is_valid():
+            cd = search_form.cleaned_data
+            keyword = cd['query']
+            posts = Post.objects.filter(body__icontains=keyword)
+            context['keyword'] = keyword
+            context['posts'] = posts
+
+    return render(request,
+                  'blog/post/search_results.html',
+                  context)

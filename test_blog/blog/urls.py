@@ -13,5 +13,9 @@ urlpatterns = [
 
     url(r'^like/$',
         views.post_like,
-        name='post_like')
+        name='post_like'),
+
+    url(r'^search/$',
+        views.post_search,
+        name='post_search'),
 ]

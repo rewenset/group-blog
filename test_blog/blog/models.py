@@ -37,3 +37,16 @@ class Post(models.Model):
                              self.publish.strftime('%m'),
                              self.publish.strftime('%d'),
                              self.slug])
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, related_name='post_comments')
+    user = models.ForeignKey(User, related_name='users_comments')
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('created',)
+
+    def __str__(self):
+        return 'Comment by {} on {}'.format(self.user.email, self.post)

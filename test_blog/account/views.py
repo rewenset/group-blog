@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.utils.crypto import get_random_string
 
-from .forms import LoginForm, UserRegistrationForm
+
+from .forms import LoginForm, UserRegistrationForm, ProfileEditForm
 from .models import Profile
 
 
@@ -80,3 +83,25 @@ def confirm_signup(request, key):
     profile.save()
     messages.success('Email confirmed. Now you can sign-in.')
     return redirect('login')
+
+
+@login_required
+def edit(request):
+    if request.method == 'POST':
+        profile_form = ProfileEditForm(instance=request.user.profile,
+                                       data=request.POST)
+        if profile_form.is_valid():
+            profile_form.save()
+            messages.success(request, 'Profile updates successfully')
+        else:
+            messages.error(request, 'Error updating your profile')
+    else:
+        try:
+            profile_form = ProfileEditForm(instance=request.user.profile)
+        except ObjectDoesNotExist:
+            Profile.objects.create(user=request.user)
+            profile_form = ProfileEditForm(instance=request.user.profile)
+
+    return render(request,
+                  'account/edit.html',
+                  {'profile_form': profile_form})

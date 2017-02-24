@@ -27,4 +27,8 @@ urlpatterns = [
     url(r'^activate/(?P<key>.+)$',
         views.confirm_signup,
         name='activation'),
+
+    url(r'^edit/$',
+        views.edit,
+        name='edit'),
 ]

@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import login_required
 
 from .models import Post
 
 
+@login_required
 def post_list(request):
     object_list = Post.objects.all()
     paginator = Paginator(object_list, 3)
@@ -20,6 +22,7 @@ def post_list(request):
                    'posts': posts})
 
 
+@login_required
 def post_detail(request, year, month, day, post):
     post = get_object_or_404(Post,
                              slug=post,
